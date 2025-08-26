@@ -1,0 +1,44 @@
+{
+    "name": "ddfsn/markdown-docs",
+    "description": "Markdown Docs is a markdown documentation manager.",
+    "license": "MIT",
+    "keywords": ["laravel", "markdown", "documentation", "distortedfusion", "ddfsn"],
+    "authors": [
+        {
+            "name": "Kevin Dierkx",
+            "email": "kevin@distortedfusion.com"
+        }
+    ],
+    "require": {
+        "php": "^8.0",
+        "illuminate/support": "*"
+    },
+    "require-dev": {
+        "distortedfusion/php-cs-fixer-config": "^2.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "DistortedFusion\\MarkdownDocs\\": "src/"
+        }
+    },
+    "scripts": {
+        "phpcs-fix" : "php-cs-fixer fix --using-cache=no --allow-risky=yes --ansi",
+        "phpcs": "php-cs-fixer fix -v --diff --dry-run --allow-risky=yes --ansi",
+        "test": [
+            "@phpcs"
+        ]
+    },
+    "scripts-descriptions": {
+        "phpcs": "Runs coding style test suite",
+        "test": "Runs all tests"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "DistortedFusion\\MarkdownDocs\\MarkdownDocsServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
