@@ -2,6 +2,7 @@
 
 namespace DistortedFusion\MarkdownDocs;
 
+use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\ServiceProvider;
 
 class MarkdownDocsServiceProvider extends ServiceProvider
@@ -13,11 +14,17 @@ class MarkdownDocsServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        if (! defined('DF_MD_PATH')) {
-            define('DF_MD_PATH', realpath(__DIR__.'/../'));
-        }
+        $this->registerMarkdownDocumentation();
+    }
 
-        $this->mergeConfigFrom(DF_MD_PATH.'/config/markdown-docs.php', 'markdown-docs');
+    private function registerMarkdownDocumentation(): void
+    {
+        $this->app->singleton('markdown.documentation', function (Container $app): Documentation {
+            return new Documentation(
+                $app['files'],
+                $app['markdown.converter'],
+            );
+        });
     }
 
     /**
@@ -27,15 +34,19 @@ class MarkdownDocsServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        $this->offerPublishing();
+        $this->setupConfig();
     }
 
-    private function offerPublishing(): void
+    private function setupConfig(): void
     {
+        $source = realpath($raw = __DIR__.'/../config/markdown-docs.php') ?: $raw;
+
         if ($this->app->runningInConsole()) {
             $this->publishes([
-                DF_MD_PATH.'/config/markdown-docs.php' => config_path('markdown-docs.php'),
+                $source => config_path('markdown-docs.php'),
             ], 'markdown-docs-config');
         }
+
+        $this->mergeConfigFrom($source, 'markdown-docs');
     }
 }
