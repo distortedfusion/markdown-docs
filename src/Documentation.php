@@ -18,7 +18,6 @@ use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
 use League\CommonMark\Extension\FrontMatter\FrontMatterExtension;
 use League\CommonMark\Extension\FrontMatter\Output\RenderedContentWithFrontMatter;
 use League\CommonMark\MarkdownConverter;
-use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\Finder\SplFileInfo;
 
 class Documentation
@@ -115,9 +114,11 @@ class Documentation
 
         // Fallback to the `h1` element within the document.
         if (! is_null($content) && trim($content) !== '') {
-            $title = (new Crawler($content))->filterXPath('//h1');
+            $title = trim(
+                Str::match('/<h1[^>]*>(.*?)<\/h1>/is', $content)
+            );
 
-            return count($title) ? $title->text() : null;
+            return $title !== '' ? $title : null;
         }
 
         return null;
