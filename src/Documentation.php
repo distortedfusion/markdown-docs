@@ -6,18 +6,11 @@ use Carbon\Carbon;
 use DistortedFusion\MarkdownDocs\Concerns\ManagesSets;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Filesystem\FilesystemAdapter;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use League\CommonMark\ConverterInterface;
-use League\CommonMark\Environment\Environment;
-use League\CommonMark\Environment\EnvironmentInterface;
-use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
-use League\CommonMark\Extension\FrontMatter\FrontMatterExtension;
 use League\CommonMark\Extension\FrontMatter\Output\RenderedContentWithFrontMatter;
-use League\CommonMark\MarkdownConverter;
 use Symfony\Component\Finder\SplFileInfo;
 
 class Documentation
@@ -50,14 +43,15 @@ class Documentation
      *
      * @param Filesystem         $files
      * @param ConverterInterface $converter
+     * @param ConverterInterface $matterConverter
      *
      * @return void
      */
-    public function __construct(Filesystem $files, ConverterInterface $converter)
+    public function __construct(Filesystem $files, ConverterInterface $converter, ConverterInterface $matterConverter)
     {
         $this->files = $files;
         $this->converter = $converter;
-        $this->matterConverter = new MarkdownConverter($this->matterEnvironment());
+        $this->matterConverter = $matterConverter;
     }
 
     /**
@@ -193,18 +187,6 @@ class Documentation
     public function setPagePath(string $set, string $path): string
     {
         return sprintf('%s/%s', rtrim($this->set($set)['path'], '/'), ltrim($path, '/'));
-    }
-
-    private function matterEnvironment(): EnvironmentInterface
-    {
-        $environment = new Environment(
-            Arr::except(Config::get('markdown'), ['extensions', 'views'])
-        );
-
-        $environment->addExtension(new CommonMarkCoreExtension());
-        $environment->addExtension(new FrontMatterExtension());
-
-        return $environment;
     }
 
     public function markdownCache(): FilesystemAdapter
