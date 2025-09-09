@@ -209,6 +209,11 @@ class Documentation
 
     public function markdownCache(): FilesystemAdapter
     {
-        return Storage::disk('markdown_cache');
+        return Storage::disk($this->cacheDisk());
+    }
+
+    protected function cacheDisk(): string
+    {
+        return config('markdown-docs.cache_disk', 'public');
     }
 }

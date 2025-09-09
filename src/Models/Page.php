@@ -150,7 +150,7 @@ class Page extends Model
 
     public function cachePath(): string
     {
-        return $this->set_id.'/'.$this->path.'/'.$this->checksum;
+        return 'markdown_cache/'.$this->set_id.'/'.$this->path.'/'.$this->checksum;
     }
 
     private function mapPage(string $set, string $path): array

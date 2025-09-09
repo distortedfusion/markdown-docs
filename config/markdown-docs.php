@@ -1,3 +1,5 @@
 <?php
 
-return [];
+return [
+    'cache_disk' => 'local',
+];
