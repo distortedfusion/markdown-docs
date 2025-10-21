@@ -155,11 +155,21 @@ class Page extends Model
 
     private function mapPage(string $set, string $path): array
     {
-        $categoryRaw = Str::contains($path, '/') ? Str::before($path, '/') : null;
-        $category = Str::after($categoryRaw, '-') ?: null;
+        $category = $categoryRaw = Str::contains($path, '/') ? Str::before($path, '/') : null;
 
-        $filename = Str::afterLast($path, '/');
-        $slug = implode('/', array_filter([$category, Str::after(Str::before($filename, '.md'), '-')]));
+        // Trim the optional priority from the category.
+        if (! is_null($categoryRaw) && is_numeric(Str::before($categoryRaw, '-'))) {
+            $category = Str::after($categoryRaw, '-');
+        }
+
+        $filename = Str::before(Str::afterLast($path, '/'), '.md');
+
+        // Trim the optional priority from the filename.
+        if (is_numeric(Str::before($filename, '-'))) {
+            $filename = Str::after($filename, '-');
+        }
+
+        $slug = implode('/', array_filter([$category, $filename]));
 
         return [
             'set_id' => $set,
