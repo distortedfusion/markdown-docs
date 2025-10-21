@@ -43,7 +43,7 @@ class MarkdownDocsServiceProvider extends ServiceProvider
     {
         $this->app->singleton('markdown.documentation.environment', function (): EnvironmentInterface {
             $environment = new Environment(
-                config('markdown_documentation.converter_environment', [])
+                config('markdown-docs.converter_environment', [])
             );
 
             $environment->addExtension(new CommonMarkCoreExtension());
@@ -67,7 +67,7 @@ class MarkdownDocsServiceProvider extends ServiceProvider
     {
         $this->app->singleton('markdown.documentation.matter-environment', function (): EnvironmentInterface {
             $environment = new Environment(
-                config('markdown_documentation.converter_environment', [])
+                config('markdown-docs.converter_environment', [])
             );
 
             $environment->addExtension(new CommonMarkCoreExtension());
