@@ -57,7 +57,7 @@ class Set extends Model
 
     public function sortPageBy(Page $page): string
     {
-        return Str::after($page->filename, '/');
+        return Str::after($page->path, '/');
     }
 
     public function getUrlAttribute(): ?string
