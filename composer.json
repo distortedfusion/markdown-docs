@@ -12,8 +12,7 @@
     "require": {
         "php": "^8.0",
         "illuminate/support": "*",
-        "league/commonmark": "^2.7",
-        "symfony/yaml": "^7.2"
+        "league/commonmark": "^2.7"
     },
     "require-dev": {
         "distortedfusion/php-cs-fixer-config": "^2.1"
