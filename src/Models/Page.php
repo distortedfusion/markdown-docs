@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace DistortedFusion\MarkdownDocs\Models;
 
 use DistortedFusion\MarkdownDocs\Facades\Documentation;
@@ -158,14 +160,14 @@ class Page extends Model
         $category = $categoryRaw = Str::contains($path, '/') ? Str::before($path, '/') : null;
 
         // Trim the optional priority from the category.
-        if (! is_null($categoryRaw) && is_numeric(Str::before($categoryRaw, '-'))) {
+        if ($this->startsWithPriority($categoryRaw)) {
             $category = Str::after($categoryRaw, '-');
         }
 
         $filename = Str::before(Str::afterLast($path, '/'), '.md');
 
         // Trim the optional priority from the filename.
-        if (is_numeric(Str::before($filename, '-'))) {
+        if ($this->startsWithPriority($filename)) {
             $filename = Str::after($filename, '-');
         }
 
@@ -183,5 +185,20 @@ class Page extends Model
             'checksum' => hash('xxh3', Documentation::pageContentRaw($set, $path)),
             'matter' => json_encode(Documentation::pageMatter($set, $path)),
         ];
+    }
+
+    private function startsWithPriority(?string $value): bool
+    {
+        if (is_null($value) || ! Str::contains($value, '-')) {
+            return false;
+        }
+
+        $prefix = Str::before($value, '-');
+
+        if (! is_numeric($prefix) || strlen($prefix) !== 2) {
+            return false;
+        }
+
+        return true;
     }
 }
